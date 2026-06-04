@@ -3,7 +3,7 @@ package br.com.runly.controller;
 import br.com.runly.dto.AuthResponse;
 import br.com.runly.dto.LoginRequest;
 import br.com.runly.dto.RegisterRequest;
-import br.com.runly.service.AuthService;
+import br.com.runly.service.auth.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

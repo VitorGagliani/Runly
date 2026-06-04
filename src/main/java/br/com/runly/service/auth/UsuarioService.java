@@ -1,4 +1,4 @@
-package br.com.runly.service;
+package br.com.runly.service.auth;
 
 import br.com.runly.dto.AtualizarPerfilRequest;
 import br.com.runly.dto.UsuarioResponse;

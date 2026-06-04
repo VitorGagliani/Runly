@@ -1,7 +1,5 @@
 package br.com.runly.config;
 
-import br.com.runly.service.CustomUserDetailsService;
-import br.com.runly.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import br.com.runly.service.auth.CustomUserDetailsService;
+import br.com.runly.service.auth.JwtService;
 
 import java.io.IOException;
 

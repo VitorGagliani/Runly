@@ -2,7 +2,7 @@ package br.com.runly.controller;
 
 import br.com.runly.dto.CriarPostRequest;
 import br.com.runly.dto.PostResponse;
-import br.com.runly.service.PostService;
+import br.com.runly.service.post.PostService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

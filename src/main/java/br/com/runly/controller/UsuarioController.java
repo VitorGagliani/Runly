@@ -2,7 +2,7 @@ package br.com.runly.controller;
 
 import br.com.runly.dto.AtualizarPerfilRequest;
 import br.com.runly.dto.UsuarioResponse;
-import br.com.runly.service.UsuarioService;
+import br.com.runly.service.auth.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

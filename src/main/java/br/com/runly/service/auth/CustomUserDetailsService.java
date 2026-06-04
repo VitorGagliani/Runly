@@ -1,4 +1,4 @@
-package br.com.runly.service;
+package br.com.runly.service.auth;
 
 import br.com.runly.model.Usuario;
 import br.com.runly.repository.UsuarioRepository;

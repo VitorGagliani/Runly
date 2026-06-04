@@ -1,10 +1,12 @@
-package br.com.runly.service;
+package br.com.runly.service.post;
 
 import br.com.runly.dto.CriarPostRequest;
 import br.com.runly.dto.PostResponse;
 import br.com.runly.model.Post;
 import br.com.runly.model.Usuario;
 import br.com.runly.repository.PostRepository;
+import br.com.runly.service.auth.UsuarioService;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

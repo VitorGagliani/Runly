@@ -1,4 +1,4 @@
-package br.com.runly.service;
+package br.com.runly.service.corrida;
 
 import br.com.runly.dto.CorridaResponse;
 import br.com.runly.dto.CriarCorridaRequest;
@@ -6,6 +6,8 @@ import br.com.runly.dto.EstatisticasCorridaResponse;
 import br.com.runly.model.Corrida;
 import br.com.runly.model.Usuario;
 import br.com.runly.repository.CorridaRepository;
+import br.com.runly.service.auth.UsuarioService;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

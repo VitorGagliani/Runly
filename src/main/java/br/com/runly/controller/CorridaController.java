@@ -3,7 +3,7 @@ package br.com.runly.controller;
 import br.com.runly.dto.CorridaResponse;
 import br.com.runly.dto.CriarCorridaRequest;
 import br.com.runly.dto.EstatisticasCorridaResponse;
-import br.com.runly.service.CorridaService;
+import br.com.runly.service.corrida.CorridaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
