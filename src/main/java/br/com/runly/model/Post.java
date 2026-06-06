@@ -13,6 +13,8 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
+import br.com.runly.model.grupo.Grupo;
+
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -33,6 +35,11 @@ public class Post {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
+    @ManyToOne
+    @JoinColumn(name = "grupo_id")
+    private Grupo grupo;
+    
+    
     public Post() {
     }
 

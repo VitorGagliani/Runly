@@ -2,14 +2,16 @@
 
 Esse back-end já vem com a base do MVP do Runly:
 
-- Cadastro de usuário
-- Login com token JWT
-- Senha criptografada com BCrypt
-- Rotas protegidas por token
-- Perfil do usuário logado
-- Cadastro/listagem de corridas
-- Estatísticas básicas de corrida
-- Criação/listagem de posts no feed
+* Cadastro de usuário
+* Login com token JWT
+* Senha criptografada com BCrypt
+* Rotas protegidas por token
+* Perfil do usuário logado
+* Cadastro/listagem de corridas
+* Estatísticas básicas de corrida
+* Criação/listagem de posts no feed
+* Criação e gerenciamento de grupos
+* Sistema de membros, administradores e fundador de grupo
 
 ## 1. Criar o banco
 
@@ -186,7 +188,7 @@ http://localhost:8080/corridas/minhas
 GET:
 
 ```txt
-	http://localhost:8080/corridas/estatisticas
+http://localhost:8080/corridas/estatisticas
 ```
 
 ## 11. Criar post
@@ -222,10 +224,248 @@ GET:
 http://localhost:8080/posts/meus
 ```
 
+## 14. Criar grupo
+
+POST:
+
+```txt
+http://localhost:8080/grupos
+```
+
+Body JSON:
+
+```json
+{
+  "nome": "Corredores Uniara",
+  "descricao": "Grupo para correr depois da aula",
+  "fotoPerfil": "https://exemplo.com/grupo.png"
+}
+```
+
+Ao criar um grupo, o usuário logado vira automaticamente:
+
+* fundador do grupo;
+* membro do grupo;
+* administrador do grupo.
+
+Resposta esperada:
+
+```json
+{
+  "id": 1,
+  "nome": "Corredores Uniara",
+  "descricao": "Grupo para correr depois da aula",
+  "fotoPerfil": "https://exemplo.com/grupo.png",
+  "fundador": {
+    "id": 1,
+    "nome": "Vitor",
+    "email": "vitor@email.com"
+  },
+  "totalMembros": 1,
+  "totalAdministradores": 1
+}
+```
+
+## 15. Editar grupo
+
+PUT:
+
+```txt
+http://localhost:8080/grupos/1
+```
+
+Body JSON:
+
+```json
+{
+  "nome": "Runly Uniara",
+  "descricao": "Grupo oficial dos corredores da Uniara",
+  "fotoPerfil": "https://exemplo.com/nova-foto.png"
+}
+```
+
+Apenas o fundador ou um administrador do grupo pode editar.
+
+## 16. Excluir grupo
+
+DELETE:
+
+```txt
+http://localhost:8080/grupos/1
+```
+
+Apenas o fundador pode excluir o grupo.
+
+## 17. Entrar em um grupo
+
+POST:
+
+```txt
+http://localhost:8080/grupos/1/entrar
+```
+
+O usuário logado entra como membro do grupo.
+
+## 18. Sair de um grupo
+
+POST:
+
+```txt
+http://localhost:8080/grupos/1/sair
+```
+
+O usuário logado sai do grupo.
+
+Observação: o fundador não pode sair do próprio grupo. Ele precisa excluir o grupo ou transferir a liderança futuramente.
+
+## 19. Adicionar membro ao grupo
+
+POST:
+
+```txt
+http://localhost:8080/grupos/1/membros/2
+```
+
+Nesse exemplo:
+
+* `1` é o ID do grupo;
+* `2` é o ID do usuário que será adicionado.
+
+Apenas o fundador ou um administrador pode adicionar membros.
+
+## 20. Remover membro do grupo
+
+DELETE:
+
+```txt
+http://localhost:8080/grupos/1/membros/2
+```
+
+Nesse exemplo:
+
+* `1` é o ID do grupo;
+* `2` é o ID do usuário que será removido.
+
+Apenas o fundador ou um administrador pode remover membros.
+
+O fundador não pode ser removido do grupo.
+
+## 21. Promover administrador
+
+POST:
+
+```txt
+http://localhost:8080/grupos/1/administradores/2
+```
+
+Nesse exemplo:
+
+* `1` é o ID do grupo;
+* `2` é o ID do usuário que será promovido para administrador.
+
+Apenas o fundador pode promover administradores.
+
+O usuário precisa ser membro do grupo antes de virar administrador.
+
+## 22. Remover administrador
+
+DELETE:
+
+```txt
+http://localhost:8080/grupos/1/administradores/2
+```
+
+Nesse exemplo:
+
+* `1` é o ID do grupo;
+* `2` é o ID do usuário que deixará de ser administrador.
+
+Apenas o fundador pode remover administradores.
+
+O fundador não pode ser removido da lista de administradores.
+
+## Regras dos grupos
+
+| Ação                   | Permissão                 |
+| ---------------------- | ------------------------- |
+| Criar grupo            | Usuário logado            |
+| Editar grupo           | Fundador ou administrador |
+| Excluir grupo          | Apenas fundador           |
+| Entrar no grupo        | Usuário logado            |
+| Sair do grupo          | Membro, exceto fundador   |
+| Adicionar membro       | Fundador ou administrador |
+| Remover membro         | Fundador ou administrador |
+| Promover administrador | Apenas fundador           |
+| Remover administrador  | Apenas fundador           |
+
+## Modelagem dos grupos
+
+A entidade `Grupo` possui:
+
+* `id`
+* `nome`
+* `descricao`
+* `fotoPerfil`
+* `fundador`
+* `membros`
+* `administradores`
+
+Relacionamentos:
+
+```txt
+Grupo N:N Usuario -> membros
+Grupo N:N Usuario -> administradores
+Grupo N:1 Usuario -> fundador
+```
+
+Tabelas geradas para os relacionamentos:
+
+```txt
+grupo_membros
+- grupo_id
+- usuario_id
+
+grupo_administradores
+- grupo_id
+- usuario_id
+```
+
+A tabela principal de grupos possui:
+
+```txt
+grupos
+- id
+- nome
+- descricao
+- foto_perfil
+- fundador_id
+```
+
 ## Próximos passos recomendados
 
 1. Testar cadastro e login no Postman.
-2. Conectar o Angular na rota `/auth/login`.
-3. Salvar o token no `localStorage`.
-4. Criar um interceptor no Angular para mandar `Authorization: Bearer token`.
-5. Depois adicionar curtidas, comentários, seguidores, grupos e chat.
+2. Testar a criação de grupos com token JWT.
+3. Testar entrada e saída de grupos.
+4. Testar permissões de fundador e administrador.
+5. Conectar o Angular na rota `/auth/login`.
+6. Salvar o token no `localStorage`.
+7. Criar um interceptor no Angular para mandar `Authorization: Bearer token`.
+8. Criar tela de listagem de grupos.
+9. Criar tela de detalhes do grupo.
+10. Depois adicionar curtidas, comentários, seguidores, posts dentro de grupos e chat.
+
+## Ideias futuras
+
+* Listar todos os grupos.
+* Buscar grupo por ID.
+* Criar posts dentro de grupos.
+* Feed específico para cada grupo.
+* Ranking de distância por grupo.
+* Distância total acumulada do grupo.
+* Transferência de fundador.
+* Convite para entrar em grupo.
+* Sistema de grupos privados e públicos.
+* Chat dentro do grupo.
+
+```
+```
