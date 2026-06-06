@@ -1,8 +1,10 @@
 package br.com.runly.service.corrida;
 
 import br.com.runly.dto.CorridaResponse;
+import br.com.runly.dto.CorridasUltimoAnoDTO;
 import br.com.runly.dto.CriarCorridaRequest;
 import br.com.runly.dto.EstatisticasCorridaResponse;
+import br.com.runly.dto.PeaceDto;
 import br.com.runly.model.Corrida;
 import br.com.runly.model.Usuario;
 import br.com.runly.repository.CorridaRepository;
@@ -11,6 +13,7 @@ import br.com.runly.service.auth.UsuarioService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -70,7 +73,49 @@ public class CorridaService {
                 paceMedioGeral
         );
     }
+    
+    public List<Corrida> listarCorridasUltimoAno(Long usuarioId) {
+        LocalDateTime fim = LocalDateTime.now();
+        LocalDateTime inicio = fim.minusYears(1);
 
+        return corridaRepository.findByUsuarioIdAndDataCorridaBetweenOrderByDataCorridaDesc(
+            usuarioId,
+            inicio,
+            fim
+        );
+    }
+    
+    
+    public List<PeaceDto> graficoPaceUltimoAno(String emailUsuario) {
+        Usuario usuario = usuarioService.buscarPorEmail(emailUsuario);
+
+        return listarCorridasUltimoAno(usuario.getId())
+                .stream()
+                .map(corrida -> new PeaceDto(
+                        corrida.getId(),
+                        corrida.getPaceMedio(),
+                        corrida.getDataCorrida()
+                ))
+                .toList();
+    }
+    
+    
+    public List<CorridasUltimoAnoDTO> graficoDistanciaUltimoAno(String emailUsuario) {
+        Usuario usuario = usuarioService.buscarPorEmail(emailUsuario);
+
+        return listarCorridasUltimoAno(usuario.getId())
+                .stream()
+                .map(corrida -> new CorridasUltimoAnoDTO(
+                        corrida.getId(),
+                        corrida.getDistanciaKm(),
+                        corrida.getDataCorrida()
+                ))
+                .toList();
+    }
+    
+    
+    
+    
     private double calcularPace(double distanciaKm, int tempoSegundos) {
         double minutos = tempoSegundos / 60.0;
         return arredondar(minutos / distanciaKm);
