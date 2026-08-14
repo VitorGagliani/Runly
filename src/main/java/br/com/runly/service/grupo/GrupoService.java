@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.runly.dto.AtualizarGrupoRequest;
 import br.com.runly.dto.CriarGrupoRequest;
+import br.com.runly.dto.GrupoDetalheResponse;
 import br.com.runly.dto.GrupoResponse;
 import br.com.runly.model.Usuario;
 import br.com.runly.model.grupo.Grupo;
@@ -99,6 +100,12 @@ public class GrupoService {
                 .stream()
                 .map(GrupoResponse::fromEntity)
                 .toList();
+    }
+
+    public GrupoDetalheResponse buscarDetalhesGrupo(Long grupoId, String emailUsuario) {
+        Grupo grupo = buscarGrupoPorId(grupoId);
+        Usuario usuarioLogado = emailUsuario != null ? user.buscarPorEmail(emailUsuario) : null;
+        return GrupoDetalheResponse.fromEntity(grupo, usuarioLogado);
     }
 
     public GrupoResponse entrarNoGrupo(Long grupoId, String emailUsuario) {

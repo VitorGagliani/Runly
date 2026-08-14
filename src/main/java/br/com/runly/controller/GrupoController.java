@@ -8,8 +8,13 @@ import org.springframework.web.bind.annotation.*;
 
 import br.com.runly.dto.AtualizarGrupoRequest;
 import br.com.runly.dto.CriarGrupoRequest;
+import br.com.runly.dto.EnviarMensagemRequest;
+import br.com.runly.dto.GrupoDetalheResponse;
 import br.com.runly.dto.GrupoResponse;
+import br.com.runly.dto.MensagemGrupoResponse;
 import br.com.runly.service.grupo.GrupoService;
+import br.com.runly.service.grupo.MensagemGrupoService;
+import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -17,9 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class GrupoController {
 
     private final GrupoService grupoService;
+    private final MensagemGrupoService mensagemService;
 
-    public GrupoController(GrupoService grupoService) {
+    public GrupoController(GrupoService grupoService, MensagemGrupoService mensagemService) {
         this.grupoService = grupoService;
+        this.mensagemService = mensagemService;
     }
 
     @PostMapping
@@ -88,6 +95,15 @@ public class GrupoController {
         return ResponseEntity.ok(grupoService.listarGrupos());
     }
 
+    @GetMapping("/{grupoId}")
+    public ResponseEntity<GrupoDetalheResponse> buscarDetalhesGrupo(
+            @PathVariable Long grupoId,
+            Principal principal
+    ) {
+        String email = principal != null ? principal.getName() : null;
+        return ResponseEntity.ok(grupoService.buscarDetalhesGrupo(grupoId, email));
+    }
+
     @PostMapping("/{grupoId}/membros/{usuarioId}")
     public ResponseEntity<GrupoResponse> adicionarMembro(
             @PathVariable Long grupoId,
@@ -145,6 +161,25 @@ public class GrupoController {
                 principal.getName()
         );
 
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{grupoId}/mensagens")
+    public ResponseEntity<MensagemGrupoResponse> enviarMensagem(
+            @PathVariable Long grupoId,
+            @RequestBody @Valid EnviarMensagemRequest request,
+            Principal principal
+    ) {
+        MensagemGrupoResponse response = mensagemService.enviarMensagem(grupoId, principal.getName(), request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{grupoId}/mensagens")
+    public ResponseEntity<List<MensagemGrupoResponse>> listarMensagens(
+            @PathVariable Long grupoId,
+            Principal principal
+    ) {
+        List<MensagemGrupoResponse> response = mensagemService.listarMensagens(grupoId, principal.getName());
         return ResponseEntity.ok(response);
     }
 }

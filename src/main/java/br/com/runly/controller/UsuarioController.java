@@ -34,4 +34,19 @@ public class UsuarioController {
     ) {
         return ResponseEntity.ok(usuarioService.atualizarPerfil(authentication.getName(), request));
     }
+
+    @org.springframework.web.bind.annotation.PostMapping("/me/foto")
+    public ResponseEntity<UsuarioResponse> uploadFotoPerfil(
+            @org.springframework.web.bind.annotation.RequestParam("arquivo") org.springframework.web.multipart.MultipartFile arquivo,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(usuarioService.uploadFotoPerfil(authentication.getName(), arquivo));
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<java.util.List<UsuarioResponse>> buscarUsuarios(
+            @org.springframework.web.bind.annotation.RequestParam("q") String termo
+    ) {
+        return ResponseEntity.ok(usuarioService.buscarUsuarios(termo));
+    }
 }
